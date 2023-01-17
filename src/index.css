@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Jura:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap");
+
+* {
+  font-family: "Lato", sans-serif;
+}
+
+html {
+  max-width: 1900px;
+  margin: 0 auto;
+}
+
+body.background-dark {
+  /* background-image: url("./images/background-dark.png"); */
+  background: rgba(31, 41, 55, 1);
+  background-size: 100% 5141px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+body.background-light {
+  /* background-image: url("./images/background-light.png"); */
+  background-size: 100% 5141px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+body.background-dark .themedText {
+  color: white !important;
+}
+body.background-light .themedText {
+  color: black !important;
+}
+
+body,
+html {
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+/* ::-webkit-scrollbar {
+  display: none;
+} */
+
+img {
+  object-fit: cover !important;
+}
+
+/* Hide scrollbar for IE, Edge add Firefox */
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none; /* Firefox */
+}
+
+.font-jura {
+  font-family: Jura;
+}
+
+.css-qoi9-MuiPaper-root-MuiAccordion-root:before {
+  display: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.searchingNftHover:hover {
+  background: #8212f4;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+body.background-dark:hover::-webkit-scrollbar-thumb,
+body.background-dark *:hover::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 50px;
+}
+
+body.background-light:hover::-webkit-scrollbar-thumb,
+body.background-light *:hover::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 50px;
+}
+
+.primaryColor {
+  color: #ff00f5 !important;
+}

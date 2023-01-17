@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "/static/css/main.6f6f67d8.css",
+    "main.js": "/static/js/main.d0ba1186.js",
+    "static/js/787.e491385b.chunk.js": "/static/js/787.e491385b.chunk.js",
+    "static/media/new twitter 1.png": "/static/media/new twitter 1.c0ec4d83d550c42c822b.png",
+    "static/media/Header.png": "/static/media/Header.932ba2bf0f239f3c018c.png",
+    "static/media/vector-1.png": "/static/media/vector-1.aaf883f9917c19629243.png",
+    "static/media/moreRecent.png": "/static/media/moreRecent.8ae141442dba8cb56184.png",
+    "static/media/nftwatcher stats.png": "/static/media/nftwatcher stats.a9abf3f7a2ddb3e775cc.png",
+    "static/media/pricingImg.png": "/static/media/pricingImg.7b9896b595c4a60c07fd.png",
+    "static/media/collectionBoxImg.png": "/static/media/collectionBoxImg.1f29b1924238136d47c2.png",
+    "static/media/Wax.png": "/static/media/Wax.d970099564365452e509.png",
+    "static/media/Cardano.png": "/static/media/Cardano.52164601ddeaf82d407d.png",
+    "static/media/Moonriver.png": "/static/media/Moonriver.067eb40a4b74d0c4622a.png",
+    "static/media/Terra.png": "/static/media/Terra.067eb40a4b74d0c4622a.png",
+    "static/media/Tezos.png": "/static/media/Tezos.0b46fd103c1e8dba0417.png",
+    "static/media/Solana.png": "/static/media/Solana.77d1fae3b52a91d274c3.png",
+    "static/media/Immutable X.png": "/static/media/Immutable X.79b77e93526e537468a4.png",
+    "static/media/Flow.png": "/static/media/Flow.b5cf3d0f5fcd97a1aba0.png",
+    "index.html": "/index.html",
+    "static/media/ETH On Polygon.svg": "/static/media/ETH On Polygon.13752778ecc525140591d6a88a974d6f.svg",
+    "main.6f6f67d8.css.map": "/static/css/main.6f6f67d8.css.map",
+    "main.d0ba1186.js.map": "/static/js/main.d0ba1186.js.map",
+    "787.e491385b.chunk.js.map": "/static/js/787.e491385b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6f6f67d8.css",
+    "static/js/main.d0ba1186.js"
+  ]
+}
