@@ -2,6 +2,7 @@ import React from "react";
 import axios from "../api/axios";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import moment from "moment/moment";
 
 const addVote = (id, startCelebration, onComplete, onError) => {
   if (id) {
@@ -52,25 +53,33 @@ const isVoteNotIncluded = (votes, id) => {
 };
 
 const getUTCDate = (fullDate) => {
-  let date = new Date(fullDate);
-
-  // In case its IOS, parse the fulldate parts and re-create the date object.
-  if (Number.isNaN(date.getMonth())) {
-    try {
-      let arr = fullDate.split(/[- :]/);
-      date = new Date(arr[0], arr[1] - 1, arr[2], arr[3], arr[4], arr[5]);
-      return new Date(date.setHours(date.getHours() + 5))
-        .toUTCString()
-        .replace("GMT", "");
-    } catch (err) {
-      console.log(err);
-      return new Date();
-    }
+  if (fullDate) {
+    return moment()
+      .date(fullDate)
+      .utc()
+      .format("ddd, DD MMM YYYY hh:mm:ss ")
+      ?.toString(); //Tue, 11 Oct 2022 09:07:44
   } else {
-    return new Date(date.setHours(date.getHours() + 5))
-      .toUTCString()
-      .replace("GMT", "");
+    return "";
   }
+  // let date = new Date(fullDate);
+  // // In case its IOS, parse the fulldate parts and re-create the date object.
+  // if (Number.isNaN(date.getMonth())) {
+  //   try {
+  //     let arr = fullDate.split(/[- :]/);
+  //     date = new Date(arr[0], arr[1] - 1, arr[2], arr[3], arr[4], arr[5]);
+  //     return new Date(date.setHours(date.getHours() + 5))
+  //       .toUTCString()
+  //       .replace("GMT", "");
+  //   } catch (err) {
+  //     console.log(err);
+  //     return new Date();
+  //   }
+  // } else {
+  //   return new Date(date.setHours(date.getHours() + 5))
+  //     .toUTCString()
+  //     .replace("GMT", "");
+  // }
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export

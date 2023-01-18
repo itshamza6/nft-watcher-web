@@ -285,7 +285,7 @@ const SubmitEvent = () => {
     }
 
     let formData = new FormData();
-    formData.append("title", event.title); //append the values with key, value pair
+    formData.append("title", event.title?.trim()); //append the values with key, value pair
     formData.append("description", event.description);
     formData.append("image", event.image);
     formData.append(
@@ -326,9 +326,15 @@ const SubmitEvent = () => {
             "votedAddedRedirectionMessage",
             res.data.message
           );
+          localStorage.setItem(
+            encodeURIComponent(event.title.replaceAll(" ", "-")),
+            true
+          );
           // navigate('/events')
           navigate(
-            "/events/" + encodeURIComponent(event.title.replaceAll(" ", "-"))
+            "/events/" +
+              encodeURIComponent(event.title.replaceAll(" ", "-")) +
+              "/upgrade"
           );
         } else {
           toast.error(res.data.message);

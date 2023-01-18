@@ -9,7 +9,9 @@ import SubmitProject from "./Pages/SubmitProject";
 import SubmitEvent from "./Pages/Event/SubmitEvent";
 import EventHomePage from "./Pages/Event/HomePage";
 import ShowEvent from "./Pages/Event/ShowEvent";
+import UpgradeListing from "./Pages/Event/UpgradeListing";
 import PageNotFound from "./Pages/404";
+import SEOTitles from "./seo-titles";
 
 // Background Images
 
@@ -21,8 +23,7 @@ export const routes = [
     layout: Layout,
     rootClasses: "home-page",
     newsletter: true,
-    title:
-      "NFTWatcher: Rarity Tools And Upcoming NFT Collections - NFT Calendar",
+    title: SEOTitles?.find((_) => _.url === "")?.title,
   },
   {
     path: "/contact-us",
@@ -30,7 +31,7 @@ export const routes = [
     layout: Layout,
     rootClasses: "contact-us-page",
     newsletter: true,
-    title: "Contact Us | NFTWatcher",
+    title: SEOTitles?.find((_) => _.url?.includes("contact-us") == true)?.title,
   },
   {
     path: "/terms-and-conditions",
@@ -38,7 +39,9 @@ export const routes = [
     layout: Layout,
     rootClasses: "terms-and-conditions-page",
     newsletter: true,
-    title: "Terms And Conditions | NFTWatcher",
+    title: SEOTitles?.find(
+      (_) => _.url?.includes("terms-and-conditions") == true
+    )?.title,
   },
   {
     path: "/privacy-policy",
@@ -46,7 +49,8 @@ export const routes = [
     layout: Layout,
     rootClasses: "privacy-policy-page",
     newsletter: true,
-    title: "Privacy Policy | NFTWatcher",
+    title: SEOTitles?.find((_) => _.url?.includes("privacy-policy") == true)
+      ?.title,
   },
   {
     path: "/advertise",
@@ -54,7 +58,7 @@ export const routes = [
     layout: Layout,
     rootClasses: "advertise-page",
     newsletter: true,
-    title: "Advertise NFT Project | NFTWatcher",
+    title: SEOTitles?.find((_) => _.url?.includes("advertise") == true)?.title,
   },
   {
     path: "/collection/:slug",
@@ -69,7 +73,8 @@ export const routes = [
     layout: Layout,
     rootClasses: "submit-event-page",
     newsletter: true,
-    title: "List Your Upcoming NFT Drop | NFTWatcher",
+    title: SEOTitles?.find((_) => _.url?.includes("events/submit") == true)
+      ?.title,
   },
   {
     path: "/events",
@@ -77,7 +82,7 @@ export const routes = [
     layout: Layout,
     rootClasses: "events-page",
     newsletter: true,
-    title: "Upcoming NFT Drops Ranked By Dates | NFTWatcher",
+    title: SEOTitles?.find((_) => _.url?.includes("/events") == true)?.title,
   },
   {
     path: "/events/tab/:selectedTab",
@@ -94,12 +99,20 @@ export const routes = [
     newsletter: true,
   },
   {
+    path: "/events/:name/upgrade",
+    component: UpgradeListing,
+    layout: Layout,
+    rootClasses: "show-events-page",
+    newsletter: true,
+  },
+  {
     path: "/project/submit",
     component: SubmitProject,
     layout: Layout,
     rootClasses: "submit-project-page",
     newsletter: true,
-    title: "List Your NFT Project With Rarity | NFTWatcher",
+    title: SEOTitles?.find((_) => _.url?.includes("project/submit") == true)
+      ?.title,
   },
   {
     path: "*",
@@ -107,6 +120,6 @@ export const routes = [
     layout: Layout,
     rootClasses: "page-not-found-page",
     newsletter: false,
-    title: "Page Not Found | NFTWatcher",
+    title: SEOTitles?.find((_) => _.url === "*")?.title,
   },
 ];

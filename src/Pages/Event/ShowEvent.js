@@ -1,6 +1,8 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import AddIcon from "@mui/icons-material/Add";
+import TickIcon from "../../images/tick.png";
 
 import {
   Grid,
@@ -10,6 +12,13 @@ import {
   Typography,
   loading,
   Skeleton,
+  Modal,
+  Box,
+  Chip,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { makeStyles, styled } from "@mui/styles";
@@ -19,24 +28,29 @@ import Sliders from "../../Components/Sliders";
 import SkeletonSlider from "../../Components/SkeletonSlider";
 import VoteAddedMessage from "../../Components/VoteAddedMessage";
 
-import EthereumIcon from "../../images/Icons/Ethereum.png";
-import Polygon from "../../images/Icons/Polygon.png";
-import Solana from "../../images/Icons/Solana.png";
-import Cardano from "../../images/Icons/Cardano.png";
-import BinanceSmartChain from "../../images/Icons/Binance Smart Chain.png";
+import EthereumIcon from "../../images/Icons/Ethereum.webp";
+import Polygon from "../../images/Icons/Polygon.webp";
+import Solana from "../../images/Icons/Solana.webp";
+import Cardano from "../../images/Icons/Cardano.webp";
+import BinanceSmartChain from "../../images/Icons/Binance Smart Chain.webp";
 import Cronos from "../../images/Icons/Cronos.png";
 import Elrond from "../../images/Icons/Elrond.png";
 import AvaxNetwork from "../../images/Icons/Avax Network.png";
-import Wax from "../../images/Icons/Wax.png";
+import Wax from "../../images/Icons/Wax.webp";
 import Tezos from "../../images/Icons/Tezos.png";
-import Moonriver from "../../images/Icons/Moonriver.png";
+import Moonriver from "../../images/Icons/Moonriver.webp";
 import Fantom from "../../images/Icons/Fantom.png";
 import ImmutableX from "../../images/Icons/Immutable X.png";
 import Hathor from "../../images/Icons/Hathor.png";
-import Flow from "../../images/Icons/Flow.png";
-import Terra from "../../images/Icons/Terra.png";
+import Flow from "../../images/Icons/Flow.webp";
+import Terra from "../../images/Icons/Terra.webp";
 import ETHOnPolygon from "../../images/Icons/ETH On Polygon.svg";
 import { toast } from "react-toastify";
+import CustomHelmet from "../../Components/Helmet";
+
+// Icons
+import DoneIcon from "@mui/icons-material/Done";
+import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 
 const blockchains = [
   {
@@ -236,6 +250,39 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 55,
     cursor: "pointer",
   },
+  modalBody: {
+    position: "relative",
+    width: "70%",
+    margin: "auto",
+    height: "90vh",
+    overflow: "auto",
+    marginTop: "50px",
+    fontFamily: "Lato",
+    background: theme.palette.themeCardColor.main,
+    border: `1px solid ${theme.palette.primary.main}`,
+    padding: "40px",
+    ["@media (max-width:1440px)"]: {
+      // eslint-disable-line no-useless-computed-key
+      width: "80%",
+      height: "600px",
+    },
+    ["@media (max-width:780px)"]: {
+      // eslint-disable-line no-useless-computed-key
+      width: "80%",
+      height: "500px",
+    },
+  },
+  modalGrid: {
+    ["@media (max-width:780px)"]: {
+      // eslint-disable-line no-useless-computed-key
+      gridTemplateColumns: "1fr",
+    },
+  },
+  modalBox: {
+    border: `2px solid ${theme.palette.primary.main}`,
+    padding: "30px 20px",
+    position: "relative",
+  },
   tag: {
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: 5,
@@ -277,14 +324,46 @@ const HomePage = ({ startCelebration }) => {
   const [drop, setDrop] = React.useState("");
   const [sliders, setSliders] = React.useState([]);
   const [reactionLoading, setReactionLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  function useQuery() {
+    const { search } = useLocation();
+
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+  }
+
+  let query = useQuery();
+
+  React.useEffect(() => {
+    query.get("new") === "true" && handleOpen();
+  }, []);
+  const { state } = useLocation();
+  const previousLocation = state ? state.prevLocation : null;
+
+  // console.log("this is name ===> ", query.get("new"));
 
   const [votedAddedRedirection, setVotedAddedRedirection] =
     React.useState(false);
   const [votedAddedRedirectionMessage, setVotedAddedRedirectionMessage] =
     React.useState(false);
 
+  React.useEffect(() => {
+    let isOwnerOfEvent =
+      localStorage.getItem(encodeURIComponent(name.replaceAll(" ", "-"))) ==
+      "true";
+    // alert(previousLocation);
+    console.log(state);
+    if (!previousLocation?.includes("upgrade") && isOwnerOfEvent) {
+      navigate(
+        `/events/${encodeURIComponent(name.replaceAll(" ", "-"))}/upgrade`
+      );
+    }
+  }, []);
+
   React.useEffect(async () => {
-    document.title = `${name.replaceAll("-", " ")} | NFTWatcher`;
+    // document.title = `${name.replaceAll("-", " ")} | NFTWatcher`;
     const votedAddedRedirection = localStorage.getItem("votedAddedRedirection");
     const votedAddedRedirectionMessage = localStorage.getItem(
       "votedAddedRedirectionMessage"
@@ -300,10 +379,16 @@ const HomePage = ({ startCelebration }) => {
     axios
       .get("/drops/show/" + encodeURI(name.replaceAll("-", " ")))
       .then((res) => {
+        if (!res?.data || Object.keys(res?.data).length == 0) {
+          toast.error("Event Not Found!");
+          navigate("/events");
+        }
         setDrop(res.data);
         setLoading(false);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   const getDataFromBackend = (url, setData) => {
@@ -362,8 +447,30 @@ const HomePage = ({ startCelebration }) => {
     }
   };
 
+  const handlePayNavigation = () => {
+    handleClose();
+    window.open("https://pay.nftwatcher.net", "_blank");
+  };
+
+  const Data = {
+    title: `${drop.title} | NFTWatcher`,
+    description: drop.description,
+    twitterTitle: drop.title,
+    twitterDesc: drop.description,
+    twitterSite: "@nftwatcher_net",
+    twitterCreator: "@nftwatcher_net",
+    twitterImage: `${drop.base_url_for_get_image}${drop.image}`,
+    ogType: "website",
+    ogUrl: `${window.location.origin}`,
+    ogTitle: drop.title,
+    ogDesc: drop.description,
+    ogImage: `${drop.base_url_for_get_image}${drop.image}`,
+  };
+
   return (
     <div className={classes.root}>
+      {drop.title !== undefined && <CustomHelmet data={Data} />}
+
       <div className={`${classes.innerRoot} mx-md-5 mt-5 mx-3`}>
         {votedAddedRedirection ? (
           <>
@@ -1055,6 +1162,251 @@ const HomePage = ({ startCelebration }) => {
           </div>
         </div>
       </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box className={classes.modalBody}>
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            sx={{
+              textAlign: "center",
+              fontFamily: "Lato",
+              fontWeight: 700,
+              letterSpacing: "1px",
+            }}
+          >
+            <img src={TickIcon} /> Thank you for listing your project
+          </Typography>
+          <Typography
+            id="modal-modal-description"
+            sx={{
+              mt: 2,
+              textAlign: "center",
+              fontFamily: "Lato",
+              fontWeight: 700,
+              letterSpacing: "1px",
+            }}
+          >
+            Your event will be publicly visible on NFTWatcher Once it's Passes
+            100 votes to be officially Listed!
+          </Typography>
+          <Typography
+            id="modal-modal-description"
+            sx={{
+              mt: 2,
+              textAlign: "center",
+              fontFamily: "Lato",
+              fontWeight: 700,
+              letterSpacing: "1px",
+            }}
+          >
+            This Verification Process Helps our Filters Sort Out Genuine
+            Projects As Hundreds Of NFT Projects are listed Everyday On
+            NFTWatcher
+          </Typography>
+          <Typography
+            id="modal-modal-description"
+            sx={{
+              mt: 2,
+              textAlign: "center",
+              fontFamily: "Lato",
+              fontWeight: 700,
+              letterSpacing: "1px",
+              fontSize: "24px",
+            }}
+          >
+            Please Select The Service You Would Like To Receive :
+          </Typography>
+          <Box
+            className={classes.modalGrid}
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              mt: 1,
+              gap: "20px",
+              fontFamily: "Lato",
+            }}
+          >
+            <Box
+              className={classes.modalBox}
+              sx={{
+                display: "grid",
+                gridAutoRows: "minmax(30px, max-content)",
+                gap: "10px",
+                fontFamily: "Lato",
+              }}
+            >
+              <Chip
+                label="Standard"
+                sx={{
+                  width: "fit-content",
+                  fontFamily: "Lato",
+                  textTransform: "uppercase",
+                }}
+              />
+              <Typography
+                sx={{ fontSize: "32px", fontWeight: "700", fontFamily: "Lato" }}
+              >
+                Free
+              </Typography>
+              <Typography sx={{ fontFamily: "Lato" }}>
+                Listing On NFTWatcher Will Always Be Free
+              </Typography>
+              <Typography></Typography>
+              <Typography></Typography>
+              <List>
+                <ListItem>
+                  <ListItemIcon>
+                    <DoneIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Get 100 votes to be officially listed"
+                    sx={{ fontFamily: "Lato" }}
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <DoneIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{ fontFamily: "Lato" }}
+                    primary="Your project will be visible across all channels"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <DoneIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{ fontFamily: "Lato" }}
+                    primary="Standard support queue"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <ReportGmailerrorredIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{ fontFamily: "Lato" }}
+                    primary="Only 3 out of 10 projects pass through vote moderation"
+                  />
+                </ListItem>
+              </List>
+              <Button
+                onClick={handleClose}
+                variant="contained"
+                sx={{
+                  width: "fit-content",
+                  fontFamily: "Lato",
+                  fontWeight: 700,
+                }}
+              >
+                Continue
+              </Button>
+            </Box>
+            <Box
+              sx={{
+                display: "grid",
+                gridAutoRows: "minmax(30px, max-content)",
+                gap: "10px",
+                fontFamily: "Lato",
+              }}
+              className={classes.modalBox}
+            >
+              <Typography
+                sx={{
+                  position: "absolute",
+                  top: -2,
+                  right: -2,
+                  padding: "5px",
+                  background: "rgb(130,18,244)",
+                  fontFamily: "Lato",
+                  fontWeight: 700,
+                }}
+              >
+                Recommonded
+              </Typography>
+              <Chip
+                label="Express"
+                sx={{
+                  width: "fit-content",
+                  fontFamily: "Lato",
+                  textTransform: "uppercase",
+                }}
+              />
+              <Typography
+                sx={{ fontSize: "32px", fontWeight: "700", fontFamily: "Lato" }}
+              >
+                130 USD
+              </Typography>
+              <Typography sx={{ fontFamily: "Lato" }}>
+                Save time and start getting exposure immediately.
+              </Typography>
+              <Typography sx={{ fontFamily: "Lato" }}>
+                Everything Included With Standard
+              </Typography>
+              <Typography sx={{ textAlign: "center" }}>
+                <AddIcon sx={{ color: "rgb(130, 18, 244)" }} />
+              </Typography>
+              <List>
+                <ListItem>
+                  <ListItemIcon>
+                    <DoneIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{ fontFamily: "Lato" }}
+                    primary="Prioritised publication without vote moderation"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <DoneIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{ fontFamily: "Lato" }}
+                    primary="Includes 1 curated post from our
+official twitter handle"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <DoneIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{ fontFamily: "Lato" }}
+                    primary="includes 1 day promoted featured event listing"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
+                    <DoneIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{ fontFamily: "Lato" }}
+                    primary="VIP support from NFTWatcher team"
+                  />
+                </ListItem>
+              </List>
+              <Button
+                variant="contained"
+                sx={{
+                  width: "fit-content",
+                  fontFamily: "Lato",
+                  fontWeight: 700,
+                }}
+                onClick={() => handlePayNavigation()}
+              >
+                Proceed to Checkout
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
     </div>
   );
 };

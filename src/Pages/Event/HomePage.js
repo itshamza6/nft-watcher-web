@@ -20,6 +20,7 @@ import BannerImage from "../../Components/BannerImage";
 import { toast } from "react-toastify";
 import CommonFunctions from "../../Common/CommonFunctions";
 import Blockchains from "../../Common/Blockchains.js";
+import SEOTitles from "../../seo-titles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -129,18 +130,16 @@ const HomePage = ({ startCelebration }) => {
       getDataFromBackend("/drops/featured", setFeaturedEvents, true);
     }
     setFilteredDrops([]);
+    document.title = SEOTitles?.find((_) =>
+      _?.url.includes(selectedTab)
+    )?.title;
     if (selectedTab == "upcoming-drops-ranked-by-dates") {
-      document.title = "Upcoming NFT Drops Ranked By Dates | NFTWatcher";
       getDataFromBackend("/drops/rankedByDates", setFilteredDrops, true);
     } else if (selectedTab == "upcoming-drops-ranked-by-votes") {
-      document.title = "Upcoming NFT Drops Ranked By Votes | NFTWatcher";
       getDataFromBackend("/drops/rankedByVotes", setFilteredDrops, true);
     } else if (selectedTab == "newly-listed-drops") {
-      document.title = "Upcoming NFT Drops Ranked By Votes | NFTWatcher";
       getDataFromBackend("/drops/newlyDrops", setFilteredDrops, true);
     } else if (selectedTab == "completed-drops") {
-      document.title =
-        "Completed Drops | NFTWatcher -  Upcoming NFT Drops Ranked By Dates | NFTWatcher";
       getDataFromBackend("/drops/completedDrops", setFilteredDrops, true);
     } else {
       navigate("/events");
